@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Ctag
+tags
+
+# Ignore CMake build directories
+**/build/**
