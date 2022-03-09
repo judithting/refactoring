@@ -57,8 +57,6 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	std::string result = "Statement for " + invoice.customer + "\n";
 
 	for (auto perf : invoice.performances) {
-		const int this_amount = CalculateAmount(plays, perf);
-
 		// add volume credit
 		volume_credits += std::max(perf.audience - 30, 0);
 		// add extra credit for every ten comedy attendees
@@ -67,14 +65,14 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 		}
 
 		// print line for this order
-		// Format: "  ${play.name}: ${format(this_amount / 100)} (${perf.audience} seats)"
+		// Format: "  ${play.name}: ${format(CalculateAmount(plays, perf) / 100)} (${perf.audience} seats)"
 		std::stringstream ss;
 		ss << "  ";
-		ss << GetCorrelativePlay(plays, perf).name << ": " << GetCurrencyFormattedString(this_amount / 100);
+		ss << GetCorrelativePlay(plays, perf).name << ": " << GetCurrencyFormattedString(CalculateAmount(plays, perf) / 100);
 		ss << " (" << perf.audience << " seats)";
 		ss << "\n";
 		result += ss.str();
-		total_amount += this_amount;
+		total_amount += CalculateAmount(plays, perf);
 	}
 
 	result += "Amount owed is " + GetCurrencyFormattedString(total_amount / 100) + "\n";
