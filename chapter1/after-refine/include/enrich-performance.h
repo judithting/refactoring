@@ -9,12 +9,13 @@ namespace VideoRental {
 struct EnrichPerformance : public Performance
 {
 	EnrichPerformance() {};
-	EnrichPerformance(Performance performance, Play play, int amount)
-		: Performance(performance), play(play), amount(amount)
+	EnrichPerformance(Performance performance, Play play, int amount, int volume_credits)
+		: Performance(performance), play(play), amount(amount), volume_credits(volume_credits)
 	{}
 
 	Play play;
 	int amount;
+	int volume_credits;
 };
 
 } // namespace VideoRental

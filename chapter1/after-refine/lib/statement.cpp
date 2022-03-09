@@ -115,7 +115,8 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	for (auto &perf : invoice.performances) {
 		const Play play = GetCorrelativePlay(plays, perf);
 		const int amount = CalculateAmount(plays, perf);
-		data.enrich_performances.push_back(EnrichPerformance(perf, play, amount));
+		const int volume_credits = CalculateVolumeCredits(plays, perf);
+		data.enrich_performances.push_back(EnrichPerformance(perf, play, amount, volume_credits));
 	}
 	return GetPlainTextStatement(data, invoice, plays);
 }
