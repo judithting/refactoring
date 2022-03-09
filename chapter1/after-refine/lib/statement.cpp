@@ -16,6 +16,31 @@ static std::string GetCurrencyFormattedString(const float amount)
 	return ss.str();
 }
 
+static int CalculateAmount(const Performance &performance, const Play &play)
+{
+	int ret = 0;
+
+	switch (play.type) {
+		case Drama::Type::TRAGEDY:
+			ret = 40000;
+			if (performance.audience > 30) {
+				ret += 1000 * (performance.audience - 30);
+			}
+			break;
+		case Drama::Type::COMEDY:
+			ret = 30000;
+			if (performance.audience > 20) {
+				ret += 10000 + 500 * (performance.audience - 20);
+			}
+			ret += 300 * performance.audience;
+			break;
+		default:
+			throw std::invalid_argument("unknown type: " + Drama::ToString((play.type)));
+	}
+
+	return ret;
+}
+
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	int total_amount = 0;
@@ -27,25 +52,7 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 			throw std::invalid_argument("unknown playID: " + perf.playID);
 		}
 		const Play play = plays.find(perf.playID)->second;
-		int this_amount = 0;
-
-		switch (play.type) {
-			case Drama::Type::TRAGEDY:
-				this_amount = 40000;
-				if (perf.audience > 30) {
-					this_amount += 1000 * (perf.audience - 30);
-				}
-				break;
-			case Drama::Type::COMEDY:
-				this_amount = 30000;
-				if (perf.audience > 20) {
-					this_amount += 10000 + 500 * (perf.audience - 20);
-				}
-				this_amount += 300 * perf.audience;
-				break;
-			default:
-				throw std::invalid_argument("unknown type: " + Drama::ToString((play.type)));
-		}
+		const int this_amount = CalculateAmount(perf, play);
 
 		// add volume credit
 		volume_credits += std::max(perf.audience - 30, 0);
