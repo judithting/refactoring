@@ -8,11 +8,11 @@
 
 namespace VideoRental {
 
-static std::string GetCurrencyFormattedString(const float amount)
+static std::string GetUsdString(const float amount)
 {
 	std::stringstream ss;
 	ss.imbue(std::locale("en_US.UTF-8"));
-	ss << "$" << std::fixed << std::setprecision(2) << amount;  // $1,234.56
+	ss << "$" << std::fixed << std::setprecision(2) << (amount / 100);  // $1,234.56
 	return ss.str();
 }
 
@@ -72,17 +72,17 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 		volume_credits += CalculateVolumeCredits(plays, perf);
 
 		// print line for this order
-		// Format: "  ${play.name}: ${format(CalculateAmount(plays, perf) / 100)} (${perf.audience} seats)"
+		// Format: "  ${play.name}: ${usd(CalculateAmount(plays, perf))} (${perf.audience} seats)"
 		std::stringstream ss;
 		ss << "  ";
-		ss << GetCorrelativePlay(plays, perf).name << ": " << GetCurrencyFormattedString(CalculateAmount(plays, perf) / 100);
+		ss << GetCorrelativePlay(plays, perf).name << ": " << GetUsdString(CalculateAmount(plays, perf));
 		ss << " (" << perf.audience << " seats)";
 		ss << "\n";
 		result += ss.str();
 		total_amount += CalculateAmount(plays, perf);
 	}
 
-	result += "Amount owed is " + GetCurrencyFormattedString(total_amount / 100) + "\n";
+	result += "Amount owed is " + GetUsdString(total_amount) + "\n";
 	result += "You earned " + std::to_string(volume_credits) + " credits" + "\n";
 	return result;
 }
