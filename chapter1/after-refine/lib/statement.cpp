@@ -90,12 +90,13 @@ static std::string GetPlainTextStatement(const StatementData &data, const Invoic
 
 	for (auto enrich_perf : data.enrich_performances) {
 		const Play &play = enrich_perf.play;
+		const int amount = enrich_perf.amount;
 		const Performance perf = Performance(enrich_perf);
 		// print line for this order
-		// Format: "  ${play.name}: ${usd(CalculateAmount(plays, perf))} (${perf.audience} seats)"
+		// Format: "  ${play.name}: ${usd(amount)} (${perf.audience} seats)"
 		std::stringstream ss;
 		ss << "  ";
-		ss << play.name << ": " << GetUsdString(CalculateAmount(plays, perf));
+		ss << play.name << ": " << GetUsdString(amount);
 		ss << " (" << perf.audience << " seats)";
 		ss << "\n";
 		result += ss.str();
@@ -113,7 +114,8 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	data.customer = invoice.customer;
 	for (auto &perf : invoice.performances) {
 		const Play play = GetCorrelativePlay(plays, perf);
-		data.enrich_performances.push_back(EnrichPerformance(perf, play));
+		const int amount = CalculateAmount(plays, perf);
+		data.enrich_performances.push_back(EnrichPerformance(perf, play, amount));
 	}
 	return GetPlainTextStatement(data, invoice, plays);
 }
