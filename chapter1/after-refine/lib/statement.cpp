@@ -72,9 +72,18 @@ static int CalculateTotalVolumeCredits(const Invoice &invoice, const std::map<st
 	return ret;
 }
 
+static int CalculateTotalAmount(const Invoice &invoice, const std::map<std::string, Play> &plays)
+{
+	int ret = 0;
+	for (auto perf : invoice.performances) {
+		ret += CalculateAmount(plays, perf);
+	}
+
+	return ret;
+}
+
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
-	int total_amount = 0;
 	std::string result = "Statement for " + invoice.customer + "\n";
 
 	for (auto perf : invoice.performances) {
@@ -86,10 +95,10 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 		ss << " (" << perf.audience << " seats)";
 		ss << "\n";
 		result += ss.str();
-		total_amount += CalculateAmount(plays, perf);
+
 	}
 
-	result += "Amount owed is " + GetUsdString(total_amount) + "\n";
+	result += "Amount owed is " + GetUsdString(CalculateTotalAmount(invoice, plays)) + "\n";
 	result += "You earned " + std::to_string(CalculateTotalVolumeCredits(invoice, plays)) + " credits" + "\n";
 	return result;
 }
