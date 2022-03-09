@@ -62,15 +62,22 @@ static int CalculateVolumeCredits(const std::map<std::string, Play> &plays, cons
 	return ret;
 }
 
+static int CalculateTotalVolumeCredits(const Invoice &invoice, const std::map<std::string, Play> &plays)
+{
+	int ret = 0;
+	for (auto perf : invoice.performances) {
+		ret += CalculateVolumeCredits(plays, perf);
+	}
+
+	return ret;
+}
+
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	int total_amount = 0;
-	int volume_credits = 0;
 	std::string result = "Statement for " + invoice.customer + "\n";
 
 	for (auto perf : invoice.performances) {
-		volume_credits += CalculateVolumeCredits(plays, perf);
-
 		// print line for this order
 		// Format: "  ${play.name}: ${usd(CalculateAmount(plays, perf))} (${perf.audience} seats)"
 		std::stringstream ss;
@@ -83,7 +90,7 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	}
 
 	result += "Amount owed is " + GetUsdString(total_amount) + "\n";
-	result += "You earned " + std::to_string(volume_credits) + " credits" + "\n";
+	result += "You earned " + std::to_string(CalculateTotalVolumeCredits(invoice, plays)) + " credits" + "\n";
 	return result;
 }
 
