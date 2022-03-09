@@ -84,7 +84,7 @@ static int CalculateTotalAmount(const StatementData &data)
 	return ret;
 }
 
-static std::string GetPlainTextStatement(const StatementData &data)
+static std::string GetPlainText(const StatementData &data)
 {
 	std::string result = "Statement for " + data.customer + "\n";
 
@@ -108,6 +108,42 @@ static std::string GetPlainTextStatement(const StatementData &data)
 	return result;
 }
 
+static std::string GetHtml(const StatementData &data)
+{
+	std::string result = "<h1>Statement for " + data.customer + "</h1>" + "\n";
+	result += "<table>\n";
+	result += "<tr>"
+		"<th>play</th>"
+		"<th>seats</th>"
+		"<th>cost</th>"
+		"</tr>"
+		"\n"
+		;
+
+	for (auto enrich_perf : data.enrich_performances) {
+		const Play &play = enrich_perf.play;
+		const int amount = enrich_perf.amount;
+		const Performance perf = Performance(enrich_perf);
+		// print line for this order
+		// Format: "  <tr><td>${play.name}</td><td>${perf.audience}</td><td>${usd(amount)}</td></tr>"
+		std::stringstream ss;
+		ss << "  ";
+		ss << "<tr>";
+		ss << "<td>" << play.name << "</td>";
+		ss << "<td>" << perf.audience << "</td>";
+		ss << "<td>" << GetUsdString(amount) << "</td>";
+		ss << "</tr>";
+		ss << "\n";
+		result += ss.str();
+
+	}
+
+	result += "</table>\n";
+	result += "<p>Amount owed is <em>" + GetUsdString(data.total_amount) + "</em>" + "</p>\n";
+	result += "<p>You earned <em>" + std::to_string(data.total_volume_credits) + "</em>" + " credits" + "</p>\n";
+	return result;
+}
+
 static StatementData CreateStatementData(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	StatementData data;
@@ -125,7 +161,12 @@ static StatementData CreateStatementData(const Invoice &invoice, const std::map<
 
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
-	return GetPlainTextStatement(CreateStatementData(invoice, plays));
+	return GetPlainText(CreateStatementData(invoice, plays));
+}
+
+std::string GetHtmlStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+{
+	return GetHtml(CreateStatementData(invoice, plays));
 }
 
 } // namespace VideoRental

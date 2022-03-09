@@ -9,6 +9,7 @@
 namespace VideoRental {
 
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays);
+std::string GetHtmlStatement(const Invoice &invoice, const std::map<std::string, Play> &plays);
 
 } // namespace VideoRental
 
