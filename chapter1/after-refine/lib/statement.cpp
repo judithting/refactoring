@@ -108,7 +108,7 @@ static std::string GetPlainTextStatement(const StatementData &data)
 	return result;
 }
 
-std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+static StatementData CreateStatementData(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	StatementData data;
 	data.customer = invoice.customer;
@@ -120,7 +120,12 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	}
 	data.total_amount = CalculateTotalAmount(data);
 	data.total_volume_credits = CalculateTotalVolumeCredits(data);
-	return GetPlainTextStatement(data);
+	return data;
+}
+
+std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+{
+	return GetPlainTextStatement(CreateStatementData(invoice, plays));
 }
 
 } // namespace VideoRental
