@@ -6,6 +6,8 @@
 #include <map>
 #include <algorithm>
 
+#include "statement-data.h"
+
 namespace VideoRental {
 
 static std::string GetUsdString(const float amount)
@@ -82,7 +84,7 @@ static int CalculateTotalAmount(const Invoice &invoice, const std::map<std::stri
 	return ret;
 }
 
-static std::string GetPlainTextStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+static std::string GetPlainTextStatement(const StatementData &data, const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	std::string result = "Statement for " + invoice.customer + "\n";
 
@@ -105,7 +107,8 @@ static std::string GetPlainTextStatement(const Invoice &invoice, const std::map<
 
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
-	return GetPlainTextStatement(invoice, plays);
+	StatementData data;
+	return GetPlainTextStatement(data, invoice, plays);
 }
 
 } // namespace VideoRental
