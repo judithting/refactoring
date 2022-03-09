@@ -17,6 +17,8 @@ struct StatementData
 
 	std::string customer;
 	std::list<EnrichPerformance> enrich_performances;
+	int total_amount;
+	int total_volume_credits;
 };
 
 } // namespace VideoRental

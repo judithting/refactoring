@@ -64,27 +64,27 @@ static int CalculateVolumeCredits(const std::map<std::string, Play> &plays, cons
 	return ret;
 }
 
-static int CalculateTotalVolumeCredits(const Invoice &invoice, const std::map<std::string, Play> &plays)
+static int CalculateTotalVolumeCredits(const StatementData &data)
 {
 	int ret = 0;
-	for (auto perf : invoice.performances) {
-		ret += CalculateVolumeCredits(plays, perf);
+	for (auto enrich_perf : data.enrich_performances) {
+		ret += enrich_perf.volume_credits;
 	}
 
 	return ret;
 }
 
-static int CalculateTotalAmount(const Invoice &invoice, const std::map<std::string, Play> &plays)
+static int CalculateTotalAmount(const StatementData &data)
 {
 	int ret = 0;
-	for (auto perf : invoice.performances) {
-		ret += CalculateAmount(plays, perf);
+	for (auto enrich_perf : data.enrich_performances) {
+		ret += enrich_perf.amount;
 	}
 
 	return ret;
 }
 
-static std::string GetPlainTextStatement(const StatementData &data, const Invoice &invoice, const std::map<std::string, Play> &plays)
+static std::string GetPlainTextStatement(const StatementData &data)
 {
 	std::string result = "Statement for " + data.customer + "\n";
 
@@ -103,8 +103,8 @@ static std::string GetPlainTextStatement(const StatementData &data, const Invoic
 
 	}
 
-	result += "Amount owed is " + GetUsdString(CalculateTotalAmount(invoice, plays)) + "\n";
-	result += "You earned " + std::to_string(CalculateTotalVolumeCredits(invoice, plays)) + " credits" + "\n";
+	result += "Amount owed is " + GetUsdString(data.total_amount) + "\n";
+	result += "You earned " + std::to_string(data.total_volume_credits) + " credits" + "\n";
 	return result;
 }
 
@@ -118,7 +118,9 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 		const int volume_credits = CalculateVolumeCredits(plays, perf);
 		data.enrich_performances.push_back(EnrichPerformance(perf, play, amount, volume_credits));
 	}
-	return GetPlainTextStatement(data, invoice, plays);
+	data.total_amount = CalculateTotalAmount(data);
+	data.total_volume_credits = CalculateTotalVolumeCredits(data);
+	return GetPlainTextStatement(data);
 }
 
 } // namespace VideoRental
