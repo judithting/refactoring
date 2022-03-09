@@ -4,6 +4,8 @@
 #include <string>
 #include <list>
 
+#include "enrich-performance.h"
+
 namespace VideoRental {
 
 struct StatementData
@@ -14,7 +16,7 @@ struct StatementData
 	{}
 
 	std::string customer;
-	std::list<Performance> performances;
+	std::list<EnrichPerformance> enrich_performances;
 };
 
 } // namespace VideoRental
