@@ -16,6 +16,15 @@ static std::string GetCurrencyFormattedString(const float amount)
 	return ss.str();
 }
 
+static Play GetCorrelativePlay(const std::map<std::string, Play> &plays, const Performance &performance)
+{
+	if (plays.find(performance.playID) == plays.end()) {
+		throw std::invalid_argument("unknown playID: " + performance.playID);
+	}
+
+	return plays.find(performance.playID)->second;
+}
+
 static int CalculateAmount(const Performance &performance, const Play &play)
 {
 	int ret = 0;
@@ -48,10 +57,7 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	std::string result = "Statement for " + invoice.customer + "\n";
 
 	for (auto perf : invoice.performances) {
-		if (plays.find(perf.playID) == plays.end()) {
-			throw std::invalid_argument("unknown playID: " + perf.playID);
-		}
-		const Play play = plays.find(perf.playID)->second;
+		const Play play = GetCorrelativePlay(plays, perf);
 		const int this_amount = CalculateAmount(perf, play);
 
 		// add volume credit
