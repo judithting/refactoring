@@ -57,13 +57,12 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	std::string result = "Statement for " + invoice.customer + "\n";
 
 	for (auto perf : invoice.performances) {
-		const Play play = GetCorrelativePlay(plays, perf);
-		const int this_amount = CalculateAmount(perf, play);
+		const int this_amount = CalculateAmount(perf, GetCorrelativePlay(plays, perf));
 
 		// add volume credit
 		volume_credits += std::max(perf.audience - 30, 0);
 		// add extra credit for every ten comedy attendees
-		if (Drama::Type::COMEDY == play.type) {
+		if (Drama::Type::COMEDY == GetCorrelativePlay(plays, perf).type) {
 			volume_credits += int(perf.audience / 5);
 		}
 
@@ -71,7 +70,7 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 		// Format: "  ${play.name}: ${format(this_amount / 100)} (${perf.audience} seats)"
 		std::stringstream ss;
 		ss << "  ";
-		ss << play.name << ": " << GetCurrencyFormattedString(this_amount / 100);
+		ss << GetCorrelativePlay(plays, perf).name << ": " << GetCurrencyFormattedString(this_amount / 100);
 		ss << " (" << perf.audience << " seats)";
 		ss << "\n";
 		result += ss.str();
