@@ -2,6 +2,7 @@
 #define __VIDEO_RENTAL_STATEMENT_DATA__
 
 #include <string>
+#include <list>
 
 namespace VideoRental {
 
@@ -13,6 +14,7 @@ struct StatementData
 	{}
 
 	std::string customer;
+	std::list<Performance> performances;
 };
 
 } // namespace VideoRental

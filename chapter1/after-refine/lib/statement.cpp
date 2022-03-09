@@ -88,7 +88,7 @@ static std::string GetPlainTextStatement(const StatementData &data, const Invoic
 {
 	std::string result = "Statement for " + data.customer + "\n";
 
-	for (auto perf : invoice.performances) {
+	for (auto perf : data.performances) {
 		// print line for this order
 		// Format: "  ${play.name}: ${usd(CalculateAmount(plays, perf))} (${perf.audience} seats)"
 		std::stringstream ss;
@@ -109,6 +109,7 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 {
 	StatementData data;
 	data.customer = invoice.customer;
+	data.performances = invoice.performances;
 	return GetPlainTextStatement(data, invoice, plays);
 }
 
