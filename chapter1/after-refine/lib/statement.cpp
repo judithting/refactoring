@@ -82,7 +82,7 @@ static int CalculateTotalAmount(const Invoice &invoice, const std::map<std::stri
 	return ret;
 }
 
-std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+static std::string GetPlainTextStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	std::string result = "Statement for " + invoice.customer + "\n";
 
@@ -101,6 +101,11 @@ std::string GetStatement(const Invoice &invoice, const std::map<std::string, Pla
 	result += "Amount owed is " + GetUsdString(CalculateTotalAmount(invoice, plays)) + "\n";
 	result += "You earned " + std::to_string(CalculateTotalVolumeCredits(invoice, plays)) + " credits" + "\n";
 	return result;
+}
+
+std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
+{
+	return GetPlainTextStatement(invoice, plays);
 }
 
 } // namespace VideoRental
