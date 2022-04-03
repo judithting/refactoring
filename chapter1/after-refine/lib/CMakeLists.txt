@@ -7,11 +7,13 @@ set(PUBLIC_HEADERS
 	${VIDEORENTAL_INCLUDE_DIR}/play.h
 	${VIDEORENTAL_INCLUDE_DIR}/statement.h
 	${VIDEORENTAL_INCLUDE_DIR}/statement-data.h
+	${VIDEORENTAL_INCLUDE_DIR}/statement-data-generator.h
 )
 
 set(VIDEORENTAL_SOURCES
 	drama.cpp
 	statement.cpp
+	statement-data-generator.cpp
 )
 
 if(BUILD_SHARED_LIBS)
