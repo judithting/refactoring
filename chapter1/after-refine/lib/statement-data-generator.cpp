@@ -14,11 +14,11 @@ static Play GetCorrelativePlay(const std::map<std::string, Play> &plays, const P
 	return plays.find(performance.playID)->second;
 }
 
-static int CalculateAmount(const std::map<std::string, Play> &plays, const Performance &performance)
+static int CalculateAmount(const Play &play, const Performance &performance)
 {
 	int ret = 0;
 
-	switch (GetCorrelativePlay(plays, performance).type) {
+	switch (play.type) {
 		case Drama::Type::TRAGEDY:
 			ret = 40000;
 			if (performance.audience > 30) {
@@ -33,18 +33,18 @@ static int CalculateAmount(const std::map<std::string, Play> &plays, const Perfo
 			ret += 300 * performance.audience;
 			break;
 		default:
-			throw std::invalid_argument("unknown type: " + Drama::ToString((GetCorrelativePlay(plays, performance).type)));
+			throw std::invalid_argument("unknown type: " + Drama::ToString(play.type));
 	}
 
 	return ret;
 }
 
-static int CalculateVolumeCredits(const std::map<std::string, Play> &plays, const Performance &performance)
+static int CalculateVolumeCredits(const Play &play, const Performance &performance)
 {
 	int ret = 0;
 	ret += std::max(performance.audience - 30, 0);
 	// add extra credit for every ten comedy attendees
-	if (Drama::Type::COMEDY == GetCorrelativePlay(plays, performance).type) {
+	if (Drama::Type::COMEDY == play.type) {
 		ret += int(performance.audience / 5);
 	}
 
@@ -77,8 +77,8 @@ StatementData CreateStatementData(const Invoice &invoice, const std::map<std::st
 	data.customer = invoice.customer;
 	for (auto &perf : invoice.performances) {
 		const Play play = GetCorrelativePlay(plays, perf);
-		const int amount = CalculateAmount(plays, perf);
-		const int volume_credits = CalculateVolumeCredits(plays, perf);
+		const int amount = CalculateAmount(play, perf);
+		const int volume_credits = CalculateVolumeCredits(play, perf);
 		data.enrich_performances.push_back(EnrichPerformance(perf, play, amount, volume_credits));
 	}
 	data.total_amount = CalculateTotalAmount(data);
