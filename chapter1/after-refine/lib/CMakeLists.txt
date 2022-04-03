@@ -5,6 +5,11 @@ set(PUBLIC_HEADERS
 	${VIDEORENTAL_INCLUDE_DIR}/performance.h
 	${VIDEORENTAL_INCLUDE_DIR}/enrich-performance.h
 	${VIDEORENTAL_INCLUDE_DIR}/play.h
+	${VIDEORENTAL_INCLUDE_DIR}/calculator-factory.h
+	${VIDEORENTAL_INCLUDE_DIR}/icalculator.h
+	${VIDEORENTAL_INCLUDE_DIR}/base-calculator.h
+	${VIDEORENTAL_INCLUDE_DIR}/tragedy-calculator.h
+	${VIDEORENTAL_INCLUDE_DIR}/comedy-calculator.h
 	${VIDEORENTAL_INCLUDE_DIR}/statement.h
 	${VIDEORENTAL_INCLUDE_DIR}/statement-data.h
 	${VIDEORENTAL_INCLUDE_DIR}/statement-data-generator.h
@@ -12,6 +17,10 @@ set(PUBLIC_HEADERS
 
 set(VIDEORENTAL_SOURCES
 	drama.cpp
+	calculator-factory.cpp
+	base-calculator.cpp
+	tragedy-calculator.cpp
+	comedy-calculator.cpp
 	statement.cpp
 	statement-data-generator.cpp
 )
