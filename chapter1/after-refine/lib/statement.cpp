@@ -86,7 +86,7 @@ static int CalculateTotalAmount(const Invoice &invoice, const std::map<std::stri
 
 static std::string GetPlainTextStatement(const StatementData &data, const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
-	std::string result = "Statement for " + invoice.customer + "\n";
+	std::string result = "Statement for " + data.customer + "\n";
 
 	for (auto perf : invoice.performances) {
 		// print line for this order
@@ -108,6 +108,7 @@ static std::string GetPlainTextStatement(const StatementData &data, const Invoic
 std::string GetStatement(const Invoice &invoice, const std::map<std::string, Play> &plays)
 {
 	StatementData data;
+	data.customer = invoice.customer;
 	return GetPlainTextStatement(data, invoice, plays);
 }
 
